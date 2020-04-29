@@ -12,24 +12,24 @@ import com.github.learn.threads.annotation.ThreadSafe;
 @ThreadSafe(authors = {"zhanfeng.zhang"})
 public class Location {
 
-    private double x_, y_;
+    private double x, y;
 
     public Location(double x, double y) {
-        x_ = x;
-        y_ = y;
+        this.x = x;
+        this.y = y;
     }
 
     public synchronized double x() {
-        return x_;
+        return x;
     }
 
     public synchronized double y() {
-        return y_;
+        return y;
     }
 
     public synchronized void moveBy(double dx, double dy) {
-        x_ = x_ + dx;
-        y_ = y_ + dy;
+        x = x + dx;
+        y = y + dy;
     }
 
 }

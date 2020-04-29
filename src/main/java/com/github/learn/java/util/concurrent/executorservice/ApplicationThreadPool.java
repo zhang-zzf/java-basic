@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public final class ApplicationThreadPool {
 
     private static final class InstanceHolder {
-        private static final ExecutorService threadPool;
+        private static final ExecutorService THREAD_POOL;
 
         static {
             final int corePoolSize = 1;
@@ -33,7 +33,7 @@ public final class ApplicationThreadPool {
             final ThreadFactory threadFactory = r -> new Thread(r, "threadPool MUST have a name");
             // 拒绝策略
             final RejectedExecutionHandler handler = new ThreadPoolExecutor.CallerRunsPolicy();
-            threadPool = new ThreadPoolExecutor(
+            THREAD_POOL = new ThreadPoolExecutor(
                 corePoolSize,
                 maximumPoolSize,
                 keepAliveTime, unit,
@@ -45,7 +45,7 @@ public final class ApplicationThreadPool {
     }
 
     public static final ExecutorService threadPool() {
-        return InstanceHolder.threadPool;
+        return InstanceHolder.THREAD_POOL;
     }
 
 }

@@ -47,8 +47,8 @@ public class LinkedBlockingQueue<E> implements BlockingQueue<E> {
     public E take() throws InterruptedException {
         int c = -1;
         E x;
-        final Lock takeLock = this.takeLock;
         final AtomicInteger counter = this.counter;
+        final Lock takeLock = this.takeLock;
 
         takeLock.lockInterruptibly();
         try {
@@ -62,7 +62,7 @@ public class LinkedBlockingQueue<E> implements BlockingQueue<E> {
                 notEmpty.signal();
             }
         } finally {
-            takeLock.lockInterruptibly();
+            takeLock.unlock();
         }
 
         if (c == capacity) {

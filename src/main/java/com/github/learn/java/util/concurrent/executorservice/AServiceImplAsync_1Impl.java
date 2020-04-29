@@ -7,15 +7,14 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2019/11/06
  */
 @Slf4j
-public class AServiceImplAsync_3 implements AService {
-
-    // 使用应用级别公用的线程池
-
+public class AServiceImplAsync_1Impl implements AService {
     @Override
     public void doSomething(String params) {
-        ApplicationThreadPool.threadPool().submit(() -> {
+        // 自己new线程, 不鼓励，创建线程和销毁线程需要大量资源
+        // 有可能线程创建太多耗尽系统资源
+        new Thread(() -> {
             // doSomeBusinessLogic();
             log.info("{} log", Thread.currentThread());
-        });
+        }, "thread name must have a name").start();
     }
 }

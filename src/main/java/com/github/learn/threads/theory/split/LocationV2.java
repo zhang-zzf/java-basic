@@ -12,19 +12,19 @@ import com.github.learn.threads.annotation.ThreadSafe;
 @ThreadSafe(authors = {"zhanfeng.zhang"})
 public class LocationV2 {
 
-    private XY xy_;
+    private XY xy;
 
     public LocationV2(double x, double y) {
-        xy_ = new XY(x, y);
+        xy = new XY(x, y);
     }
 
     public synchronized XY xy() {
-        return xy_;
+        return xy;
     }
 
     public synchronized void movedBy(double dx, double dy) {
         XY oldXy = xy();
-        xy_ = new XY(oldXy.x() + dx, oldXy.y() + dy);
+        xy = new XY(oldXy.x() + dx, oldXy.y() + dy);
     }
 
 }

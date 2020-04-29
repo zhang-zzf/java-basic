@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2019/11/06
  */
 @Slf4j
-public class AServiceImplAsync_2 implements AService {
+public class AServiceImplAsync_2Impl implements AService {
 
     // 自己独享的线程池，不和别的对象公用
     // 用于特殊要求的业务场景
