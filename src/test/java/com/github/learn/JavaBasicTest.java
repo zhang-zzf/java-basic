@@ -1,10 +1,7 @@
 package com.github.learn;
 
-import static com.github.learn.util.HexUtil.toHex;
-import static java.nio.charset.StandardCharsets.ISO_8859_1;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.assertj.core.api.BDDAssertions.then;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -12,13 +9,37 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
+
+import static com.github.learn.util.HexUtil.*;
+import static java.nio.charset.StandardCharsets.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.BDDAssertions.*;
 
 /**
  * @author zhanfeng.zhang
  * @date 2020/04/24
  */
+@Slf4j
 public class JavaBasicTest {
+
+    @Test
+    void testExceptionFinally() {
+        MutableObject o = new MutableObject();
+        Throwable throwable = catchThrowable(() -> aMethodThrowException(o));
+        then(throwable).isInstanceOf(RuntimeException.class);
+        // finally will always execute
+        then(o.i).isEqualTo(1);
+    }
+
+    private void aMethodThrowException(MutableObject object) {
+        try {
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            throw e;
+        } finally {
+            object.i = 1;
+        }
+    }
 
     @Test
     void testMapEquals() {
@@ -47,7 +68,9 @@ public class JavaBasicTest {
     @Test
     void testNull2Primitive() {
         Boolean bNull = null;
-        Throwable throwable = catchThrowable(() -> { boolean pbNull = bNull;});
+        Throwable throwable = catchThrowable(() -> {
+            boolean pbNull = bNull;
+        });
         then(throwable).isInstanceOf(NullPointerException.class);
     }
 
@@ -82,7 +105,7 @@ public class JavaBasicTest {
 
     @Test
     void testList() {
-        String[] dataArray = {"a", "b", "c", "d", "e", "f"};
+        String[] dataArray = { "a", "b", "c", "d", "e", "f" };
         // can not add or remove elements to the constantList
         List<String> constantList = Arrays.asList(dataArray);
 
@@ -109,7 +132,7 @@ public class JavaBasicTest {
         String s2 = "Programming";
         String s3 = "Program" + "ming";
         then(s1).isSameAs(s2).isSameAs(s2.intern())
-            .isSameAs(s3).isSameAs(s3.intern());
+                .isSameAs(s3).isSameAs(s3.intern());
     }
 
     @Test
@@ -117,5 +140,9 @@ public class JavaBasicTest {
         then(null instanceof Object).isFalse();
     }
 
+
+    class MutableObject {
+        int i = 0;
+    }
 
 }
