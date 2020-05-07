@@ -1,6 +1,7 @@
 package com.github.learn.idea;
 
 import org.intellij.lang.annotations.Language;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ public class BasicTest {
             "}";
     }
 
+    @Disabled
     @Test
     void testLiveTemplate(int a, String str) {
         // fori

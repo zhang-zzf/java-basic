@@ -1,18 +1,21 @@
 package com.github.learn.java.util.concurrent.executorservice;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 
 /**
  * @author zhanfeng.zhang
  * @date 2020/04/19
  */
 @Slf4j
+@Ignore
 public class ThreadPoolTest {
 
     static class TimedTask implements Runnable {
