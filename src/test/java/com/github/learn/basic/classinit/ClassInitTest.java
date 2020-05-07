@@ -10,22 +10,13 @@ import static org.assertj.core.api.Assertions.from;
 import static org.assertj.core.api.BDDAssertions.then;
 
 /**
- * 每个测试用例只能单个测试（类加载）
+ * 每个测试用例只能手动单个测试（类加载）
  *
  * @author zhanfeng.zhang
  * @date 2020/5/6
  */
 @Disabled
 public class ClassInitTest {
-
-    /**
-     * 每次测试前都重新初始化一次 FlagHolder, 使各个 UT 互不干扰
-     */
-    @BeforeEach
-    void initFlagHolder() {
-        // 初始化 holder
-        FlagHolder.initInstance();
-    }
 
     /**
      * 测试接口的初始化: 接口的初始化不会引发父接口的初始化
@@ -101,12 +92,51 @@ public class ClassInitTest {
             .returns(false, from(FlagHolder::isSuperInit));
     }
 
+    /**
+     * 类加载但不会引发初始化
+     */
+    @Test void classLoadButNotInit() {
+        Class<SubClass> subClassClass = SubClass.class;
+        then(FlagHolder.getInstance()).returns(false, from(FlagHolder::isSubClassInit))
+            .returns(false, from(FlagHolder::isSuperClassInit))
+            .returns(false, from(FlagHolder::isSubInit))
+            .returns(false, from(FlagHolder::isSuperInit));
+    }
+
+    /**
+     * 不引发初始化
+     *
+     * @throws ClassNotFoundException
+     */
+    @Test void classLoaderLoad() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("com.github.learn.basic.classinit.SubClass");
+        then(FlagHolder.getInstance()).returns(false, from(FlagHolder::isSubClassInit))
+            .returns(false, from(FlagHolder::isSuperClassInit))
+            .returns(false, from(FlagHolder::isSubInit))
+            .returns(false, from(FlagHolder::isSuperInit));
+    }
+
+    /**
+     * 引发初始化
+     *
+     * @throws ClassNotFoundException
+     */
+    @Test void classForName() throws ClassNotFoundException {
+        // Class.forName("com.github.learn.basic.classinit.SubClass", true, this.getClass().getClassLoader());
+        Class<SubClass> aClass = (Class<SubClass>)Class.forName("com.github.learn.basic.classinit.SubClass");
+        then(FlagHolder.getInstance()).returns(true, from(FlagHolder::isSubClassInit))
+            .returns(true, from(FlagHolder::isSuperClassInit))
+            .returns(false, from(FlagHolder::isSubInit))
+            .returns(false, from(FlagHolder::isSuperInit));
+        this.getClass().getClassLoader().loadClass("com.github.learn.basic.classinit.SubClass");
+    }
+
 }
 
 @Data
 @Accessors(chain = true)
 class FlagHolder {
-    private static FlagHolder INSTANCE;
+    private static FlagHolder INSTANCE = new FlagHolder();
     private boolean superInit;
     private boolean subInit;
 
@@ -115,10 +145,6 @@ class FlagHolder {
 
     private FlagHolder() {
 
-    }
-
-    public static final void initInstance() {
-        INSTANCE = new FlagHolder();
     }
 
     public static FlagHolder getInstance() {
