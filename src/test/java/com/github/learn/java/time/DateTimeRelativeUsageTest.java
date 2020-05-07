@@ -29,6 +29,7 @@ public class DateTimeRelativeUsageTest {
         LocalDate localDate = localDateTime1.toLocalDate();
         LocalTime localTime = localDateTime1.toLocalTime();
     }
+
     @Test
     void givenDate_when_thenDemo() {
         Date date = new Date();
@@ -100,8 +101,11 @@ public class DateTimeRelativeUsageTest {
 
     @Test
     void givenInstant_when_then() {
-        log.info("{}", Instant.now());
+        Instant now = Instant.now();
+        log.info("Instant => {}", now);
         log.info("{}", Instant.now(Clock.systemUTC()));
+        log.info("Instant.getEpochSecond => {}", now.getEpochSecond());
+        log.info("Instant.toEpochMilli => {}", now.toEpochMilli());
     }
 
     @Test void givenLocale() {
@@ -111,10 +115,9 @@ public class DateTimeRelativeUsageTest {
         then(Locale.CHINA).isEqualTo(new Locale("zh", "CN"));
     }
 
-
     @Test void givenDayOfWeek() {
         DayOfWeek tuesday = DayOfWeek.MONDAY.plus(1);
-        then(tuesday).isEqualByComparingTo(DayOfWeek.TUESDAY);
+        then(tuesday).isEqualTo(DayOfWeek.TUESDAY);
         // Tuesday
         then(tuesday.getDisplayName(TextStyle.FULL, Locale.getDefault())).isEqualTo("Tuesday");
         // 星期二
@@ -124,6 +127,7 @@ public class DateTimeRelativeUsageTest {
     @Test void givenMonth() {
         Month january = Month.JANUARY;
     }
+
     @Test
     void givenLocalDate_when_then() {
         // 当前时间
@@ -142,6 +146,11 @@ public class DateTimeRelativeUsageTest {
         log.info("LocalDate.now() + 1 week: {}", parse.plusWeeks(1));
 
         now.with(TemporalAdjusters.lastDayOfMonth()).minusDays(2);
+        DayOfWeek dayOfWeek = now.getDayOfWeek();
+        LocalDate with = now.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+        log.info("nextOrSame => {}", with);
+        then(with).isEqualTo(now);
+
     }
 
     @Test
