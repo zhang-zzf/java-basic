@@ -4,13 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ *
  * @author zhanfeng.zhang
  * @date 2020/04/19
  */
@@ -39,6 +38,48 @@ public class ThreadPoolTest {
                 e.printStackTrace();
             }
             log.info("Thread: {}, taskNo: {} => end", Thread.currentThread(), taskNo);
+        }
+    }
+
+    /**
+     * {@link ExecutorService#shutdown()} 不会中断正在执行任务的线程
+     * <p>1. 不能提交新的task</p>
+     * <p>2. 等待已经提交的task执行完成</p>
+     * <p>3. 关闭线程池</p>
+     */
+    @Test
+    public void testShutdown() throws InterruptedException {
+        ExecutorService service = Executors.newCachedThreadPool();
+        // This method does not wait for previously submitted tasks to complete execution.
+        // Use awaitTermination to do tha
+        service.shutdown();
+        while (true) {
+            // 等待线程池关闭
+            boolean poolTerminated = service.awaitTermination(1, TimeUnit.SECONDS);
+            if (poolTerminated)
+                break;
+
+        }
+    }
+
+    /**
+     * {@link ExecutorService#shutdownNow()} 会中断正在执行任务的线程
+     * <p>1. 当前线程发送 interrupt 信号给所有在执行任务的线程</p>
+     * <p>2. 返回所有在等待队列中还未执行的任务</p>
+     *
+     * <p>正在执行任务的线程会不会停止依赖与提交的loopTask是否响应中断</p>
+     */
+    @Test
+    public void testShutdownNow() throws InterruptedException {
+        ExecutorService service = Executors.newScheduledThreadPool(1);
+        // This method does not wait for actively executing tasks to terminate.
+        // Use awaitTermination to do that.
+        service.shutdownNow();
+        while (true) {
+            // 等待线程池关闭
+            boolean poolTerminated = service.awaitTermination(1, TimeUnit.SECONDS);
+            if (poolTerminated)
+                break;
         }
     }
 

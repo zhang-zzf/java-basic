@@ -1,6 +1,7 @@
 package com.github.learn.threads.visibility;
 
 import java.io.Closeable;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,6 +26,9 @@ public class NoVisibility implements Closeable {
         System.out.println("shutdown now...");
     }
 
+    /**
+     * Conclusion: work-thread will never be shutdown.
+     */
     public static void main(String[] args) throws InterruptedException {
         NoVisibility statusFlag = new NoVisibility();
 
@@ -32,8 +36,6 @@ public class NoVisibility implements Closeable {
         Thread.sleep(1000);
 
         new Thread(statusFlag::close, "close-thread").start();
-        Thread.sleep(10000);
     }
-
 
 }
